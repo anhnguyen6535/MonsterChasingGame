@@ -1,0 +1,57 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MonsterSpawner : MonoBehaviour
+{
+    [SerializeField]
+    private GameObject[] monsterReference;
+
+    [SerializeField]
+    private Transform leftPos, rightPos;
+
+    private GameObject spawnedMonster;
+    private int randomIndex;
+    private int randomSide;
+   
+    // Start is called before the first frame update
+    void Start()
+    {
+        StartCoroutine(SpawnedMonsters());
+    }
+    
+    IEnumerator SpawnedMonsters()
+    {
+        while(true)
+        {
+            //wait for 1-5 sec to spawn a new monster
+            yield return new WaitForSeconds(Random.Range(1,5));
+
+            randomIndex = Random.Range(0, monsterReference.Length); //between 0 & length-1
+            randomSide = Random.Range(0,2);
+
+            //instantiate creates a copy of the game obj passed 
+            spawnedMonster = Instantiate(monsterReference[randomIndex]);
+
+            if(randomSide == 0)
+            {
+                //left side
+                spawnedMonster.transform.position = leftPos.position;
+                spawnedMonster.GetComponent<Monster>().speed = Random.Range(4,10);
+            }
+            else
+            {
+                //right side
+                spawnedMonster.transform.position = rightPos.position;
+                spawnedMonster.GetComponent<Monster>().speed = -Random.Range(4,10);
+                spawnedMonster.transform.localScale = new Vector3(-1,1,0);
+            }
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+}
